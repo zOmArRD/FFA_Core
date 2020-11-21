@@ -1,0 +1,6 @@
+name: FFA_Core
+api: 3.0.0
+version: 1.0.0
+main: core\Main
+author: zOmArRD
+description: EndGames Network FFA SERVER
