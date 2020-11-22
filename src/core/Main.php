@@ -41,6 +41,10 @@ class Main extends PluginBase
     /** @var $instance */
     public static $instance;
 
+    private $data = null;
+
+    private $kills = false;
+
     /** @var null $originalAdaptor */
     private $originalAdaptor = null;
 
