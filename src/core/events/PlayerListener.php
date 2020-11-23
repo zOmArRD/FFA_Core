@@ -11,7 +11,15 @@ use pocketmine\event\block\LeavesDecayEvent;
 use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
 use pocketmine\event\inventory\{CraftItemEvent, InventoryTransactionEvent};
 use pocketmine\event\Listener;
-use pocketmine\event\player\{PlayerCreationEvent, PlayerDeathEvent, PlayerDropItemEvent, PlayerExhaustEvent, PlayerInteractEvent, PlayerJoinEvent, PlayerQuitEvent, PlayerRespawnEvent};
+use pocketmine\event\player\{PlayerCreationEvent,
+    PlayerDeathEvent,
+    PlayerDropItemEvent,
+    PlayerExhaustEvent,
+    PlayerInteractEvent,
+    PlayerJoinEvent,
+    PlayerPreLoginEvent,
+    PlayerQuitEvent,
+    PlayerRespawnEvent};
 use pocketmine\item\{Item, GlassBottle};
 use pocketmine\level\particle\DestroyBlockParticle;
 use pocketmine\level\Position;
@@ -27,6 +35,16 @@ class PlayerListener implements Listener
      */
     public function PlayerCreationEvent(PlayerCreationEvent $event) {
         $event->setPlayerClass(EGPlayer::class);
+    }
+
+    public function PlayerPreLoginEvent(PlayerPreLoginEvent $ev) : void
+    {
+        $pl = $ev->getPlayer();
+        if (!Main::getInstance()->getServer()->isWhitelisted($pl->getName())) {
+            $ev->setKickMessage(Main::PREFIX . "This server are in maintenance!");
+            $ev->setCancelled(true);
+            return;
+        }
     }
 
     /**
@@ -152,6 +170,7 @@ class PlayerListener implements Listener
     {
         $player = $event->getPlayer();
         $event->setDrops([]);
+        $level = $player->getLevel()->getName();
         if ($player instanceof EGPlayer) {
             $player->addDeaths(1);
             $dead = "§b". $player->getName() . "§4[§c" . $player->getKills() . "§4]";
@@ -165,8 +184,10 @@ class PlayerListener implements Listener
 
                 }
                 $this->Lightning($player);
+                if ($level = "soccer"){
+                    $event->setDeathMessage($kill . " §6has killed " . $dead);
 
-                $event->setDeathMessage($kill . " §6has killed " . $dead);
+                }
             }
         }
     }
