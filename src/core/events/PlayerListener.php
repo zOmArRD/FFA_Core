@@ -170,7 +170,6 @@ class PlayerListener implements Listener
     {
         $player = $event->getPlayer();
         $event->setDrops([]);
-        $level = $player->getLevel()->getName();
         if ($player instanceof EGPlayer) {
             $player->addDeaths(1);
             $dead = "§b". $player->getName() . "§4[§c" . $player->getKills() . "§4]";
