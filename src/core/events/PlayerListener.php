@@ -38,7 +38,6 @@ use pocketmine\Server;
 
 class PlayerListener implements Listener
 {
-
     /**
      * @param PlayerCreationEvent $event
      */
