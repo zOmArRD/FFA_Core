@@ -9,8 +9,8 @@ use core\Main;
 
 class SpamListener implements Listener{
 
-    public array $ips = [".es", ".net", ".ddns", ".eu", ".us", ".club", ".sytes", ".cf", ".tk", ".ml", ".pro", ".com", ".1", ".2", ".3", ".4", ".5", ".6", ".7", ".8", ".9", ".10", ",net", ",pro", ",com", ",ml", ",tk", ",cf", "cubecraft", "versai"];
-    public array $allowed = ["play.endgames.cf", "shop.endgames.cf", "endgames.cf"];
+    public $ips = [".es", ".net", ".ddns", ".eu", ".us", ".club", ".sytes", ".cf", ".tk", ".ml", ".pro", ".com", ".1", ".2", ".3", ".4", ".5", ".6", ".7", ".8", ".9", ".10", ",net", ",pro", ",com", ",ml", ",tk", ",cf", "cubecraft", "versai"];
+    public $allowed = ["play.endgames.cf", "shop.endgames.cf", "endgames.cf"];
 
     /**
      * @param PlayerChatEvent $ev
