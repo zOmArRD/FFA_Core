@@ -5,20 +5,20 @@ use core\utils\DeviceData;
 use pocketmine\event\Listener;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\event\server\DataPacketSendEvent;
-use pocketmine\network\mcpe\protocol\AvailableCommandsPacket;
-use pocketmine\network\mcpe\protocol\EmotePacket;
-use pocketmine\network\mcpe\protocol\LoginPacket;
-use pocketmine\network\mcpe\protocol\ProtocolInfo;
+use pocketmine\network\mcpe\protocol\{AvailableCommandsPacket, EmotePacket, LoginPacket, ProtocolInfo};
 use pocketmine\Server;
 
 class DataPacketListener implements Listener
 {
+    /** @var array $commandList */
     public $commandList = [];
 
+    /**
+     * @param DataPacketReceiveEvent $event
+     */
     public function onDataReceive(DataPacketReceiveEvent $event)
     {
         $packet = $event->getPacket();
-
         if ($packet instanceof EmotePacket) {
             $emoteId = $packet->getEmoteId();
             Server::getInstance()->broadcastPacket($event->getPlayer()->getViewers(), EmotePacket::create($event->getPlayer()->getId(), $emoteId, 1 << 0));
@@ -32,14 +32,18 @@ class DataPacketListener implements Listener
         }
     }
 
-    public function onDataPacketSend(DataPacketSendEvent $event) {
+    /**
+     * @param DataPacketSendEvent $event
+     */
+    public function onDataPacketSend(DataPacketSendEvent $event)
+    {
         $packet = $event->getPacket();
-        foreach (["mw", "multiworld", "query", "nick", "tag", "gamerule", "checkperm"] as $command){
+        foreach (["mw", "multiworld", "query", "nick", "tag", "gamerule", "checkperm"] as $command) {
             $this->commandList[strtolower($command)] = null;
         }
         if ($packet instanceof AvailableCommandsPacket) {
             if ($event->getPlayer()->hasPermission("endgames.op")) return;
-                $packet->commandData = array_diff_key($packet->commandData, $this->commandList);
-            }
+            $packet->commandData = array_diff_key($packet->commandData, $this->commandList);
+        }
     }
 }
