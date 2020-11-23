@@ -23,7 +23,6 @@ use pocketmine\event\player\PlayerDropItemEvent;
 use pocketmine\event\player\PlayerExhaustEvent;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
-use pocketmine\event\player\PlayerPreLoginEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerRespawnEvent;
 use pocketmine\item\GlassBottle;
@@ -40,12 +39,16 @@ use pocketmine\Server;
 class PlayerListener implements Listener
 {
 
-    public function onCreation(PlayerCreationEvent $event) {
-
+    /**
+     * @param PlayerCreationEvent $event
+     */
+    public function PlayerCreationEvent(PlayerCreationEvent $event) {
         $event->setPlayerClass(EGPlayer::class);
-
     }
 
+    /**
+     * @param PlayerJoinEvent $ev
+     */
     public function onServerJoin(PlayerJoinEvent $ev)
     {
         $pl = $ev->getPlayer();
@@ -69,38 +72,44 @@ class PlayerListener implements Listener
         $ev->setJoinMessage("§7[§a+§7] §b$pn");
     }
 
+    /**
+     * @param PlayerQuitEvent $ev
+     */
     public function onServerLeave(PlayerQuitEvent $ev)
     {
         $ev->setQuitMessage(null);
         $player = $ev->getPlayer();
         PlayerUtils::onClearPlayer($player);
+        $player->removeAllEffects();
         $player->teleport(Server::getInstance()->getDefaultLevel()->getSafeSpawn());
     }
 
+    /**
+     * @param PlayerInteractEvent $event
+     */
     public function PlayerInteractEvent(PlayerInteractEvent $event) : void
     {
         $action = $event->getAction();
         $player = $event->getPlayer();
-        $block = $event->getBlock();
-        $item = $event->getItem();
-
-
         if ($action == PlayerInteractEvent::RIGHT_CLICK_AIR) {
             $id = $event->getItem()->getId();
-            $custom = $item->getCustomName();
             if ($id == Item::COMPASS) {
                 SelectorForm::selectorFFA($player);
             }
         }
-
     }
 
-    public function noHunguer(PlayerExhaustEvent $ev) : void
+    /**
+     * @param PlayerExhaustEvent $ev
+     */
+    public function PlayerExhaustEvent(PlayerExhaustEvent $ev) : void
     {
         $ev->setCancelled(true);
-
     }
 
+    /**
+     * @param EntityDamageEvent $event
+     */
     public function onDamage(EntityDamageEvent $event)
     {
         $player = $event->getEntity();
@@ -110,39 +119,27 @@ class PlayerListener implements Listener
         if($player->getLevel()->getName() === "lobby"){
             $event->setCancelled();
         }
-
-        if ($player instanceof EGPlayer){
-            $cause = $player->getLastDamageCause();
-            $dead = "§b".$player->getName() . "§4[§c" . $player->getKills() . "§4]";
-            if ($cause instanceof EntityDamageByEntityEvent) {
-                if ($event->getFinalDamage() > $player->getHealth()) {
-                    $this->kill($player);
-                    $player->addDeaths(1);
-
-                    $killer = $cause->getDamager();
-                    $kill = $killer->getName();
-
-                    if ($killer instanceof EGPlayer) {
-                        $killer->addKills(1);
-                        $kill = "§b". $killer->getName() . "§4[§c" . $killer->getKills() . "§4]";
-
-                    }
-                    Main::getInstance()->getServer()->broadcastMessage($kill . " §6ha asesinado a " . $dead);
-                }
-            }
-        }
     }
 
-    public function onCraft(CraftItemEvent $event){
+    /**
+     * @param CraftItemEvent $event
+     */
+    public function CraftItemEvent(CraftItemEvent $event){
         $event->setCancelled();
     }
 
-    public function onDecay(LeavesDecayEvent $ev) : void
+    /**
+     * @param LeavesDecayEvent $ev
+     */
+    public function LeavesDecayEvent(LeavesDecayEvent $ev) : void
     {
         $ev->setCancelled(true);
     }
 
-    public function onDropItem(PlayerDropItemEvent $event): void
+    /**
+     * @param PlayerDropItemEvent $event
+     */
+    public function PlayerDropEvent(PlayerDropItemEvent $event): void
     {
         $player = $event->getPlayer();
         $level = $player->getLevel()->getName();
@@ -165,7 +162,10 @@ class PlayerListener implements Listener
         }
     }
 
-    public function onDeaht(PlayerDeathEvent $event): void
+    /**
+     * @param PlayerDeathEvent $event
+     */
+    public function PlayerDeathEvent(PlayerDeathEvent $event): void
     {
         $player = $event->getPlayer();
         $event->setDrops([]);
@@ -183,34 +183,25 @@ class PlayerListener implements Listener
                 }
                 $this->Lightning($player);
 
-                $event->setDeathMessage($kill . " §6ha asesinado a " . $dead);
+                $event->setDeathMessage($kill . " §6has killed " . $dead);
             }
         }
     }
 
-    public function kill(Player $player)
-    {
-        $this->Lightning($player);
-        $player->getInventory()->clearAll();
-        $player->getArmorInventory()->clearAll();
-        $player->setGamemode(1);
-        $player->setMaxHealth(1);
-        $player->setHealth(1);
-        $player->setInvisible(true);
-        PlayerUtils::selectorItem($player);
-    }
-
-    public function onRespawn(PlayerRespawnEvent $ev)
+    /**
+     * @param PlayerRespawnEvent $ev
+     */
+    public function PlayerRespawnEvent(PlayerRespawnEvent $ev)
     {
         $player = $ev->getPlayer();
-        $player->setImmobile(true);
-        $player->setInvisible(true);
-        $ev->setRespawnPosition(Server::getInstance()->getDefaultLevel()->getSafeSpawn());
-        PlayerUtils::onClearPlayer($player);
-        PlayerUtils::onServerJoin($player);
+        $player->setGamemode(3);
+        $ev->setRespawnPosition($player->getLevel()->getSafeSpawn());
         PlayerUtils::selectorItem($player);
     }
 
+    /**
+     * @param Player $player
+     */
     public function Lightning(Player $player) :void
     {
         $light = new AddActorPacket();
