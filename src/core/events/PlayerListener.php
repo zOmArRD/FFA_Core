@@ -2,39 +2,23 @@
 declare(strict_types=1);
 
 namespace core\events;
-use core\EGPlayer;
-use core\Main;
+use core\{EGPlayer, Main};
 use core\providers\SelectorForm;
 use core\tasks\PlayerJoin;
-use core\utils\DeviceData;
-use core\utils\PlayerUtils;
-use pocketmine\entity\Effect;
-use pocketmine\entity\EffectInstance;
-use pocketmine\entity\Entity;
+use core\utils\{DeviceData, PlayerUtils};
+use pocketmine\entity\{Effect, EffectInstance, Entity};
 use pocketmine\event\block\LeavesDecayEvent;
-use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\event\entity\EntityDamageEvent;
-use pocketmine\event\inventory\CraftItemEvent;
-use pocketmine\event\inventory\InventoryTransactionEvent;
+use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
+use pocketmine\event\inventory\{CraftItemEvent, InventoryTransactionEvent};
 use pocketmine\event\Listener;
-use pocketmine\event\player\PlayerCreationEvent;
-use pocketmine\event\player\PlayerDeathEvent;
-use pocketmine\event\player\PlayerDropItemEvent;
-use pocketmine\event\player\PlayerExhaustEvent;
-use pocketmine\event\player\PlayerInteractEvent;
-use pocketmine\event\player\PlayerJoinEvent;
-use pocketmine\event\player\PlayerQuitEvent;
-use pocketmine\event\player\PlayerRespawnEvent;
-use pocketmine\item\GlassBottle;
-use pocketmine\item\Item;
+use pocketmine\event\player\{PlayerCreationEvent, PlayerDeathEvent, PlayerDropItemEvent, PlayerExhaustEvent, PlayerInteractEvent, PlayerJoinEvent, PlayerQuitEvent, PlayerRespawnEvent};
+use pocketmine\item\{Item, GlassBottle};
 use pocketmine\level\particle\DestroyBlockParticle;
 use pocketmine\level\Position;
 use pocketmine\level\sound\EndermanTeleportSound;
 use pocketmine\math\Vector3;
-use pocketmine\network\mcpe\protocol\AddActorPacket;
-use pocketmine\network\mcpe\protocol\PlaySoundPacket;
-use pocketmine\Player;
-use pocketmine\Server;
+use pocketmine\network\mcpe\protocol\{AddActorPacket, PlaySoundPacket};
+use pocketmine\{Player, Server};
 
 class PlayerListener implements Listener
 {
